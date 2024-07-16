@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-//i learnt about:
+//i learnt about: 
+//one of the ways to read a value from the created provider
 //ConsumerWidgets which are widgets of provider help to access and
 // react to the changes made in the state.
 
