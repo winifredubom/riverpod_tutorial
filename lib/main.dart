@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 //i learnt about: 
-//one of the other ways to read a value from the created provider
+//one of the other ways to read a value from the created provider if it is a stateless widget
 // 
 final nameProvider = Provider<String>((ref) {
 return 'Hello Joy';
