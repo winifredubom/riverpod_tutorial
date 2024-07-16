@@ -2,11 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 //i learnt about: 
-//one of the ways to read a value from the created provider
-//ConsumerWidgets which are widgets of provider help to access and
-// react to the changes made in the state.
-
-//watch() listens to the providers inorder to be know the changes made to the providers state so as to rebuild it
+//one of the other ways to read a value from the created provider
+// 
 final nameProvider = Provider<String>((ref) {
 return 'Hello Joy';
 });
@@ -31,18 +28,22 @@ class MyApp extends StatelessWidget {
 }
 
 
-class MyHomePage extends ConsumerWidget {
+class MyHomePage extends StatelessWidget {
   const MyHomePage({super.key});
  
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final name = ref.watch(nameProvider);
+  Widget build(BuildContext context) {
+   // final name = ref.watch(nameProvider);
     return Scaffold(
       appBar: AppBar(
         title: const Text('RIverpod Provider'),
       ),
       body: Center(
-        child: Text(name),
+        child: Consumer(
+          builder: (BuildContext context, WidgetRef ref, Widget? child) { 
+            final name = ref.watch(nameProvider);
+            return Text(name);
+           },),
       ),// This trailing comma makes auto-formatting nicer for build methods.
     );
   }
