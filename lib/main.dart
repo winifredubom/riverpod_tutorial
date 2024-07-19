@@ -1,22 +1,23 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:riverpod_practice/api_service.dart';
-import 'package:riverpod_practice/user_model.dart';
+
 
 //i learnt about: 
-// The third type of provider which is StateNotifierProvider
-// It is a provider that is used to listen to and expose a StateNotifier, in which working hand in hand, they manage state which may change in reaction to a user reaction
-// It is used for centralizing Business logic in a single place and improving maintainability of the code over time
-// How to make use of FutureProvider to  
-
-final apiProvider = Provider<ApiService>(
-  (ref) => ApiService(),
-  );
+// The fourth type of provider which is StreamProvider
+// It is a provider that depends on Stream instead of Future like the futureProvider
+// It is used to get data from real-time database
+// 
 
 
-final userDataProvider = FutureProvider<List<UserModel>>((ref){
-return ref.read(apiProvider).getUser();
-});
+//this would provide data after an interval of two seconds
+final streamProvider = StreamProvider<int>(((ref) {
+  return Stream.periodic(const Duration(seconds: 2), ((computationCount) => computationCount));
+}));
+
+
+
 void main() {
   runApp(const ProviderScope(child: MyApp()));
 }
@@ -44,39 +45,30 @@ class Main extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final userData = ref.watch(userDataProvider);
+    final streamData = ref.watch(streamProvider);
  
     return Scaffold(
       appBar: AppBar(
         title: const Text('State Provider'),
         actions: [
           IconButton(
-            onPressed:(){
-                          } ,
+            onPressed:(){ } ,
             icon: const Icon(Icons.refresh))
         ],
       ),
-      body: userData.when(
-        data: (data){
-          return ListView.builder(
-            itemBuilder: ((context, index){
-              return ListTile(
-                title: Text('${data[index].firstName} ${data[index].lastName}'),
-                subtitle: Text(data[index].email),
-                leading: CircleAvatar(
-                  child: Image.network(data[index].avatar)
-                )
-              );
-            } 
+      body: streamData.when(
+        data: ((data) =>  Center(
+          child:  Text(
+            data.toString(),
+            style:const  TextStyle(
+              fontSize: 25,
             ),
-            itemCount: data.length,);
-        },
-         error: ((error, stackTrace) => Text(error.toString())), 
-        loading: ((){
-          return const Center(
-            child:  CircularProgressIndicator(),
-          );
-        }))
+          ),
+        )),
+         error: ((error, stackTrace) => Text(error.toString())),
+          loading: () =>const  Center(
+            child: CircularProgressIndicator(),
+          ))
       );
   }
 }
