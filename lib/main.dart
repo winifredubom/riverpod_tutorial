@@ -2,14 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 //i learnt about: 
-//one of the other ways to read a value from the created provider if it is a stateful widget
-// ref is a parameter type of WidgetRef that allows the widget to interact with the provider
-// Use ref.watch when your UI needs to react to changes in a provider's state.
-// Use ref.read for one-time operations or to modify state without making updates.
+//The second type of provider which is StateProvider
+//This type of provider is used to store simple mutable object that cant be changed like:
+//String, enum, boolean. But it cant be used to store complex objects
+// ref. watch is used to observe the provider state inside the build method and when the provider value changes it rebuilds the widget
+// ref.read is used to read the provider value once 
+// 
 
-final nameProvider = Provider<String>((ref) {
-return 'Hello Joy';
-});
+
+final counterProvider = StateProvider<int>(
+  (ref) => 0
+  );
+  
 void main() {
   runApp(const ProviderScope(child: MyApp()));
 }
@@ -31,24 +35,48 @@ class MyApp extends StatelessWidget {
 }
 
 
-class Main extends ConsumerStatefulWidget {
+class Main extends ConsumerWidget {
   const Main({super.key});
 
   @override
-  // ignore: library_private_types_in_public_api
-  _MainState createState() => _MainState();
-}
+  Widget build(BuildContext context, WidgetRef ref) {
+    final count = ref.watch(counterProvider);
 
-class _MainState extends ConsumerState<Main> {
-  @override
-  Widget build(BuildContext context) {
-    final name = ref.watch(nameProvider);
+// ref.listen is to listen to the changes made
+    ref.listen(counterProvider, ((previous, next) {
+      if (next == 5)
+      {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('The Value is $next')));
+      }
+    }));
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Riverpod'),
+        title: const Text('State Provider'),
+        actions: [
+          IconButton(
+            onPressed:(){
+              ref.invalidate(counterProvider);
+              // or
+             // ref.refresh(counterProvider);
+                          } ,
+            icon: const Icon(Icons.refresh))
+        ],
       ),
-      body: Center(child: 
-      Text(name),),
+      body:  Center(
+        child: Text(
+          count.toString(),
+           style: const TextStyle(
+            fontSize: 20
+          ),
+        ),
+      ),
+      floatingActionButton: 
+      FloatingActionButton(onPressed: (){
+        ref.read(counterProvider.notifier).state++;
+        // or
+       // ref.read(counterProvider.notifier).update((state) => state + 1); 
+      },
+      child: const Icon(Icons.add),),
     );
   }
 }
