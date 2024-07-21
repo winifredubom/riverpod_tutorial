@@ -1,17 +1,17 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:riverpod_practice/user.dart';
 
 
 
 //i learnt about: 
-// Family Modifier in Riverpod 
+// Family Modifier(multiple values) in Riverpod 
 // They are used to pass values to a provider
-// The only limitataion is that we can pass only a single value
 
-final nameProvider = Provider.family<String, String>(
-  (ref, name) {
-    return 'Hello $name';
+final nameProvider = Provider.family<String, User>(
+  (ref, user) {
+    return 'Name: ${user.name} and Address: ${user.address} ';
   }
 );
 void main() {
@@ -46,7 +46,8 @@ class Main extends ConsumerStatefulWidget {
 class _MainState extends ConsumerState<Main> {
   @override
   Widget build(BuildContext context) {
-    final name = ref.watch(nameProvider('Jiggy Joy'));
+    final name = ref.watch(
+      nameProvider(const User('Joy', 'Lagos')));
 
     return  Scaffold(
       appBar: AppBar(
