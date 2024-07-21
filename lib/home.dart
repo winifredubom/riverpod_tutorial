@@ -14,6 +14,7 @@ class Home extends StatelessWidget {
           (onPressed: (){
             context.push('/counter');
           }, child: const Text('Counter')) ,),
+          
     );
   }
 }
