@@ -13,7 +13,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 //this would provide data after an interval of two seconds
 final streamProvider = StreamProvider<int>(((ref) {
-  return Stream.periodic(const Duration(seconds: 2), ((computationCount) => computationCount));
+  return Stream.periodic(const Duration(seconds: 2),
+   ((computationCount) => computationCount));
 }));
 
 
