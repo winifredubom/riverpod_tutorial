@@ -1,22 +1,18 @@
-import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
+import 'package:riverpod_practice/counter.dart';
+import 'package:riverpod_practice/home.dart';
 
 
 //i learnt about: 
-// The fourth type of provider which is StreamProvider
-// It is a provider that depends on Stream instead of Future like the futureProvider
-// It is used to get data from real-time database
-// 
-
-
-//this would provide data after an interval of two seconds
-final streamProvider = StreamProvider<int>(((ref) {
-  return Stream.periodic(const Duration(seconds: 2),
-   ((computationCount) => computationCount));
-}));
-
+// AutoDispose Modifier in Riverpod 
+// AutoDispose is used to destroy the state of a provider when it is no longer used.
+// it is also used to reset the state when a user leaves the screen and re-enters it
+// GoRouter dependency was used here, its a declarative routing package used for making navigations in flutter apps simpler
+// keepAlive Function is used to tell Riverpod that the state of the provider should be preserved even if no longer listened to
+// the Timer was made use of to dispose the providers state after a given duration
 
 
 void main() {
@@ -29,47 +25,20 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return MaterialApp.router(
       title: 'Flutter Demo',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const Main(),
+      routerConfig: _router
     );
   }
 }
 
 
-class Main extends ConsumerWidget {
-  const Main({super.key}); 
+final GoRouter _router  = GoRouter(routes:[
+  GoRoute(path: '/', builder: (context, state) => const Home()),
+  GoRoute(path: '/counter', builder: (context, state) => const Counter()),
+]);
 
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final streamData = ref.watch(streamProvider);
- 
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('State Provider'),
-        actions: [
-          IconButton(
-            onPressed:(){ } ,
-            icon: const Icon(Icons.refresh))
-        ],
-      ),
-      body: streamData.when(
-        data: ((data) =>  Center(
-          child:  Text(
-            data.toString(),
-            style:const  TextStyle(
-              fontSize: 25,
-            ),
-          ),
-        )),
-         error: ((error, stackTrace) => Text(error.toString())),
-          loading: () =>const  Center(
-            child: CircularProgressIndicator(),
-          ))
-      );
-  }
-}
